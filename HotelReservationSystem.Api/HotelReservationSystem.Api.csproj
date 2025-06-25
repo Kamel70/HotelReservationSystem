@@ -26,4 +26,8 @@
     <ProjectReference Include="..\HotelReservationSystem.DataAccess\HotelReservationSystem.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
