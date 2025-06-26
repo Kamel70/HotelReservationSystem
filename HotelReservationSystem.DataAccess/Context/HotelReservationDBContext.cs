@@ -22,7 +22,12 @@ namespace HotelReservation.DataAccess.Models
         public DbSet<Payment> Payment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
+        {
+
+            modelBuilder.Entity<Room>().Property(r => r.PricePerNight).HasPrecision(18, 4);
+            modelBuilder.Entity<Reservation>().Property(r => r.TotalPrice).HasPrecision(18, 4);
+            modelBuilder.Entity<Payment>().Property(p => p.Amount).HasPrecision(18, 4);
+
             modelBuilder.Entity<ApplicationUser>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -34,7 +39,7 @@ namespace HotelReservation.DataAccess.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Reservation>()
-                .HasOne(r => r.User)
+                .HasOne<ApplicationUser>()
                 .WithMany(u => u.Reservations)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);

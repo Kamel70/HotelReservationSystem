@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace HotelReservation.DataAccess.Models
 {
@@ -14,7 +13,6 @@ namespace HotelReservation.DataAccess.Models
         public string roomType { get; set; }
         public string? Description { get; set; }
         public int Beds { get; set; }
-        [Precision(18, 4)]
         public decimal PricePerNight { get; set; }
         public bool IsAvailable { get; set; }
         public int HotelId { get; set; }
