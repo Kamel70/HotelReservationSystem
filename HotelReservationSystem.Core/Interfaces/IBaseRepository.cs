@@ -9,12 +9,13 @@ namespace HotelReservationSystem.Core.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
-        public Task<List<T>> GetAllAsync();
-        public Task<T> GetByIDAsync(int id);
-        public Task AddAsync(T obj);
-        public Task UpdateAsync(T obj);
-        public Task DeleteAsync(T obj);
-        public Task SaveAsync();
+        Task<List<T>> GetAllAsync();
+        Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
+        Task<T> AddAsync(T obj);
+        T Update(T obj);
+        void Delete(T obj);
+        Task SaveAsync();
 
     }
 }

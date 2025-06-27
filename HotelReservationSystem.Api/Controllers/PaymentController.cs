@@ -30,7 +30,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetPaymentById(int id)
         {
-            var payment = await _paymentRepository.GetByIDAsync(id);
+            var payment = await _paymentRepository.FindAsync(p => p.Id == id);
             if (payment == null)
             {
                 return NotFound($"Hotel with ID {id} not found.");
@@ -60,7 +60,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdatePayment(int id, addPaymentDto paymentDto)
         {
-            var existingPayment = await _paymentRepository.GetByIDAsync(id);
+            var existingPayment = await _paymentRepository.FindAsync(p => p.Id == id);
             if (existingPayment == null)
             {
                 return NotFound($"Payment with ID {id} not found.");
@@ -69,19 +69,23 @@ namespace HotelReservationSystem.Api.Controllers
             existingPayment.PaymentMethod = paymentDto.PaymentMethod;
             existingPayment.PaymentDate = DateTime.Now;
             existingPayment.Status = paymentDto.Status;
-            await _paymentRepository.UpdateAsync(existingPayment);
+            Payment updatedPayment=_paymentRepository.Update(existingPayment);
+            if (updatedPayment == null)
+            {
+                return BadRequest("Failed to update payment.");
+            }
             await _paymentRepository.SaveAsync();
             return Ok($"The Payment with ID {existingPayment.Id} Updated Successfully");
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeletePayment(int id)
         {
-            var payment = await _paymentRepository.GetByIDAsync(id);
+            var payment = await _paymentRepository.FindAsync(p => p.Id == id);
             if (payment == null)
             {
                 return NotFound($"Payment with ID {id} not found.");
             }
-            await _paymentRepository.DeleteAsync(payment);
+            _paymentRepository.Delete(payment);
             await _paymentRepository.SaveAsync();
             return Ok($"The Payment with ID {payment.Id} Deleted Successfully");
         }

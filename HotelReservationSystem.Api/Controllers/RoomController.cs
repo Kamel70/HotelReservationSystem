@@ -30,7 +30,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetRoomById(int id)
         {
-            var room = await _roomRepository.GetByIDAsync(id);
+            var room = await _roomRepository.FindAsync(r => r.Id == id);
             if (room == null)
             {
                 return NotFound($"Room with ID {id} not found.");
@@ -62,7 +62,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateRoom(int id, AddRoomDto roomDto)
         {
-            var existingRoom = await _roomRepository.GetByIDAsync(id);
+            var existingRoom = await _roomRepository.FindAsync(r => r.Id == id);
             if (existingRoom == null)
             {
                 return NotFound($"Room with ID {id} not found.");
@@ -73,19 +73,23 @@ namespace HotelReservationSystem.Api.Controllers
             existingRoom.Beds = roomDto.Beds;
             existingRoom.PricePerNight = roomDto.PricePerNight;
             existingRoom.IsAvailable = roomDto.IsAvailable;
-            await _roomRepository.UpdateAsync(existingRoom);
+            Room updatedRoom=_roomRepository.Update(existingRoom);
+            if (updatedRoom == null)
+            {
+                return BadRequest("Failed to update room.");
+            }
             await _roomRepository.SaveAsync();
             return Ok($"The Room {existingRoom.roomNumber} Updated Successfully");
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
-            var room = await _roomRepository.GetByIDAsync(id);
+            var room = await _roomRepository.FindAsync(r => r.Id == id);
             if (room == null)
             {
                 return NotFound($"Room with ID {id} not found.");
             }
-            await _roomRepository.DeleteAsync(room);
+            _roomRepository.Delete(room);
             await _roomRepository.SaveAsync();
             return Ok($"The room {room.roomNumber} Deleted Successfully");
         }

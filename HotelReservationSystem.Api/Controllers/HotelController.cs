@@ -29,7 +29,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetHotelById(int id)
         {
-            var hotel = await _hotelRepository.GetByIDAsync(id);
+            var hotel = await _hotelRepository.FindAsync(h=>h.Id==id);
             if (hotel == null)
             {
                 return NotFound($"Hotel with ID {id} not found.");
@@ -61,7 +61,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateHotel(int id, addHotelDto hotelDto)
         {
-            var existingHotel = await _hotelRepository.GetByIDAsync(id);
+            var existingHotel = await _hotelRepository.FindAsync(h => h.Id == id);
             if (existingHotel == null)
             {
                 return NotFound($"Hotel with ID {id} not found.");
@@ -72,19 +72,23 @@ namespace HotelReservationSystem.Api.Controllers
             existingHotel.County = hotelDto.Country;
             existingHotel.phonenumber = hotelDto.PhoneNumber;
             existingHotel.Email = hotelDto.Email;
-            await _hotelRepository.UpdateAsync(existingHotel);
+            Hotel updatedHotel=_hotelRepository.Update(existingHotel);
+            if(updatedHotel == null)
+            {
+                return BadRequest("Failed to update the hotel.");
+            }
             await _hotelRepository.SaveAsync();
             return Ok($"The Hotel {existingHotel.Name} Updated Successfully");
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            var hotel = await _hotelRepository.GetByIDAsync(id);
+            var hotel = await _hotelRepository.FindAsync(h => h.Id == id);
             if (hotel == null)
             {
                 return NotFound($"Hotel with ID {id} not found.");
             }
-            await _hotelRepository.DeleteAsync(hotel);
+            _hotelRepository.Delete(hotel);
             await _hotelRepository.SaveAsync();
             return Ok($"The Hotel {hotel.Name} Deleted Successfully");
         }

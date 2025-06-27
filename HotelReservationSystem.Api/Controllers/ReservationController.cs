@@ -30,7 +30,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetReservationById(int id)
         {
-            var reservation = await _reservationRepository.GetByIDAsync(id);
+            var reservation = await _reservationRepository.FindAsync(r => r.Id == id);
             if (reservation == null)
             {
                 return NotFound($"Reservation with ID {id} not found.");
@@ -61,7 +61,7 @@ namespace HotelReservationSystem.Api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateReservation(int id, AddReservationDto reservationDto)
         {
-            var existingReservation = await _reservationRepository.GetByIDAsync(id);
+            var existingReservation = await _reservationRepository.FindAsync(r => r.Id == id);
             if (existingReservation == null)
             {
                 return NotFound($"Reservation with ID {id} not found.");
@@ -71,19 +71,23 @@ namespace HotelReservationSystem.Api.Controllers
             existingReservation.CheckInDate = DateOnly.FromDateTime(DateTime.Now);
             existingReservation.CheckOutDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
             existingReservation.CreatedAt = DateTime.Now;
-            await _reservationRepository.UpdateAsync(existingReservation);
+            Reservation updatedReservation=_reservationRepository.Update(existingReservation);
+            if (updatedReservation == null)
+            {
+                return BadRequest("Failed to update reservation.");
+            }
             await _reservationRepository.SaveAsync();
             return Ok($"{existingReservation.Id} Updated Successfully");
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
-            var reservation = await _reservationRepository.GetByIDAsync(id);
+            var reservation = await _reservationRepository.FindAsync(r => r.Id == id);
             if (reservation == null)
             {
                 return NotFound($"Reservation with ID {id} not found.");
             }
-            await _reservationRepository.DeleteAsync(reservation);
+            _reservationRepository.Delete(reservation);
             await _reservationRepository.SaveAsync();
             return Ok($"{reservation.Id} Deleted Successfully");
         }

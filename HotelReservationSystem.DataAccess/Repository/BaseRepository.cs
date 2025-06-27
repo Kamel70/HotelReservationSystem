@@ -17,16 +17,42 @@ namespace HotelReservationSystem.DataAccess.Repository
         {
             _context = context;
         }
-        public async Task AddAsync(T obj)
+        public async Task<T> AddAsync(T obj)
         {
             await _context.Set<T>().AddAsync(obj);
+            return obj;
         }
 
-        public Task DeleteAsync(T obj)
+        public void Delete(T obj)
         {
            _context.Set<T>().Remove(obj);
-            return Task.CompletedTask;
 
+        }
+
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.Where(criteria).ToListAsync();
+        }
+
+        public async Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.SingleOrDefaultAsync(criteria);
         }
 
         public async Task<List<T>> GetAllAsync()
@@ -34,20 +60,15 @@ namespace HotelReservationSystem.DataAccess.Repository
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIDAsync(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
-
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
         }
 
-        public Task UpdateAsync(T obj)
+        public T Update(T obj)
         {
             _context.Set<T>().Update(obj);
-            return Task.CompletedTask;
+            return obj;
         }
     }
 }
