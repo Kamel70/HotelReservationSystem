@@ -1,6 +1,8 @@
 
 using System.Text;
 using HotelReservation.DataAccess.Models;
+using HotelReservationSystem.Core.Interfaces;
+using HotelReservationSystem.DataAccess.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +18,11 @@ namespace HotelReservationSystem.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+            #region register Repositories
+            builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            #endregion
             #region Register Identity in the API Project
             builder.Services.AddDbContext<HotelReservationDBContext>(options =>
                 options.UseSqlServer(
