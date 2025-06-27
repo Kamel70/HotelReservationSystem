@@ -18,6 +18,7 @@ namespace HotelReservation.DataAccess.Models
         public string phonenumber { get; set; }
         public string Email { get; set; }
         public ICollection<Room> Rooms { get; set; }
+        public string managerId { get; set; }
         public Hotel()
         {
             Rooms = new HashSet<Room>();

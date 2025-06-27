@@ -17,16 +17,16 @@ namespace HotelReservationSystem.Api.Controllers
             _paymentRepository = paymentRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllPayment()
-        {
-            var payments = await _paymentRepository.GetAllAsync();
-            if (payments == null || payments.Count == 0)
-            {
-                return NotFound("No Payments found.");
-            }
-            return Ok(payments);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllPayment()
+        //{
+        //    var payments = await _paymentRepository.GetAllAsync();
+        //    if (payments == null || payments.Count == 0)
+        //    {
+        //        return NotFound("No Payments found.");
+        //    }
+        //    return Ok(payments);
+        //}
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetPaymentById(int id)
         {

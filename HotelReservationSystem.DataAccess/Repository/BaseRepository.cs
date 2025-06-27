@@ -55,9 +55,14 @@ namespace HotelReservationSystem.DataAccess.Repository
             return await query.SingleOrDefaultAsync(criteria);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(string[] includes=null)
         {
-            return await _context.Set<T>().ToListAsync();
+            IQueryable<T> query = _context.Set<T>();
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task SaveAsync()

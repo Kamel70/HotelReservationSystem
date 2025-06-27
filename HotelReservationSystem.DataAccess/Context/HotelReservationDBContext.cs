@@ -32,6 +32,12 @@ namespace HotelReservation.DataAccess.Models
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
+            modelBuilder.Entity<Hotel>()
+                .HasOne<ApplicationUser>()
+                .WithOne(u => u.hotel )
+                .HasForeignKey<Hotel>(h => h.managerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Room>()
                 .HasOne(r => r.Hotel)
                 .WithMany(h => h.Rooms)

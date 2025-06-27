@@ -17,16 +17,16 @@ namespace HotelReservationSystem.Api.Controllers
             _reservationRepository = reservationRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllReservations()
-        {
-            var reservations = await _reservationRepository.GetAllAsync();
-            if (reservations == null || reservations.Count == 0)
-            {
-                return NotFound("No hotels found.");
-            }
-            return Ok(reservations);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllReservations()
+        //{
+        //    var reservations = await _reservationRepository.GetAllAsync();
+        //    if (reservations == null || reservations.Count == 0)
+        //    {
+        //        return NotFound("No hotels found.");
+        //    }
+        //    return Ok(reservations);
+        //}
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetReservationById(int id)
         {

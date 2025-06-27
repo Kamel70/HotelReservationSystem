@@ -9,7 +9,7 @@ namespace HotelReservationSystem.Core.Interfaces
 {
     public interface IBaseRepository<T> where T : class
     {
-        Task<List<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync(string[] includes=null);
         Task<T> FindAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
         Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, string[] includes = null);
         Task<T> AddAsync(T obj);
