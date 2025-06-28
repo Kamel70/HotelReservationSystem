@@ -17,28 +17,28 @@ namespace HotelReservationSystem.Api.Controllers
             _paymentRepository = paymentRepository;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllPayment()
-        //{
-        //    var payments = await _paymentRepository.GetAllAsync();
-        //    if (payments == null || payments.Count == 0)
-        //    {
-        //        return NotFound("No Payments found.");
-        //    }
-        //    return Ok(payments);
-        //}
-        [HttpGet("{id:int}")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllPayments()
+        {
+            var payments = await _paymentRepository.GetAllAsync();
+            if (payments == null || payments.Count() == 0)
+            {
+                return NotFound("No Payments found.");
+            }
+            return Ok(payments);
+        }
+        [HttpGet("GetById{id:int}")]
         public async Task<IActionResult> GetPaymentById(int id)
         {
             var payment = await _paymentRepository.FindAsync(p => p.Id == id);
             if (payment == null)
             {
-                return NotFound($"Hotel with ID {id} not found.");
+                return NotFound($"Payment with ID {id} not found.");
             }
             return Ok(payment);
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreatePayment(addPaymentDto paymentDto)
         {
             Payment payment = new Payment
@@ -50,14 +50,14 @@ namespace HotelReservationSystem.Api.Controllers
             };
             if (payment == null)
             {
-                return BadRequest("Hotel data is null.");
+                return BadRequest("Payment data is null.");
             }
             await _paymentRepository.AddAsync(payment);
             await _paymentRepository.SaveAsync();
             return CreatedAtAction(nameof(GetPaymentById), new { id = payment.Id }, payment);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("Update/{id:int}")]
         public async Task<IActionResult> UpdatePayment(int id, addPaymentDto paymentDto)
         {
             var existingPayment = await _paymentRepository.FindAsync(p => p.Id == id);
@@ -77,7 +77,7 @@ namespace HotelReservationSystem.Api.Controllers
             await _paymentRepository.SaveAsync();
             return Ok($"The Payment with ID {existingPayment.Id} Updated Successfully");
         }
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<IActionResult> DeletePayment(int id)
         {
             var payment = await _paymentRepository.FindAsync(p => p.Id == id);

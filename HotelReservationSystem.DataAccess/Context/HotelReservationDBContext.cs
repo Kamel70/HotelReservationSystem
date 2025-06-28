@@ -44,6 +44,12 @@ namespace HotelReservation.DataAccess.Models
                 .HasForeignKey(r => r.HotelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Room>()
+                .HasOne<ApplicationUser>()
+                .WithMany(u => u.Rooms)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Reservation>()
                 .HasOne<ApplicationUser>()
                 .WithMany(u => u.Reservations)

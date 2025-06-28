@@ -3,6 +3,7 @@ using HotelReservationSystem.BL.DTOs.Hotel;
 using HotelReservationSystem.BL.DTOs.Reservation;
 using HotelReservationSystem.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelReservationSystem.Api.Controllers
@@ -12,28 +13,42 @@ namespace HotelReservationSystem.Api.Controllers
     public class ReservationController : ControllerBase
     {
         private readonly IBaseRepository<Reservation> _reservationRepository;
-        public ReservationController(IBaseRepository<Reservation> reservationRepository)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public ReservationController(IBaseRepository<Reservation> reservationRepository,UserManager<ApplicationUser> userManager)
         {
             _reservationRepository = reservationRepository;
+            _userManager = userManager;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllReservations()
-        //{
-        //    var reservations = await _reservationRepository.GetAllAsync();
-        //    if (reservations == null || reservations.Count == 0)
-        //    {
-        //        return NotFound("No hotels found.");
-        //    }
-        //    return Ok(reservations);
-        //}
-        [HttpGet("{id:int}")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllReservations()
+        {
+            var reservations = await _reservationRepository.GetAllAsync(new[] { "Room", "Payment" });
+            if (reservations == null || reservations.Count() == 0)
+            {
+                return NotFound("No Reservation found.");
+            }
+            return Ok(reservations);
+        }
+        [HttpGet("GetByID{id:int}")]
         public async Task<IActionResult> GetReservationById(int id)
         {
-            var reservation = await _reservationRepository.FindAsync(r => r.Id == id);
+            var reservation = await _reservationRepository.FindAsync(r => r.Id == id, new[] { "Room", "Payment" });
             if (reservation == null)
             {
                 return NotFound($"Reservation with ID {id} not found.");
+            }
+            return Ok(reservation);
+        }
+
+        [HttpGet("GetByUserId")]
+        public async Task<IActionResult> GetReservationByUserId()
+        {
+            ApplicationUser user = await _userManager.GetUserAsync(User);
+            var reservation = await _reservationRepository.FindAllAsync(r => r.UserId==user.Id, new[] { "Room", "Payment" });
+            if (reservation == null)
+            {
+                return NotFound($"You don't have Reservation");
             }
             return Ok(reservation);
         }

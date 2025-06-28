@@ -18,9 +18,12 @@ namespace HotelReservation.DataAccess.Models
 
         public Hotel hotel { get; set; }
 
+        public ICollection<Room> Rooms { get; set; }
+
         public ApplicationUser()
         {
             Reservations = new HashSet<Reservation>();
+            Rooms = new HashSet<Room>();
         }
     }
 }
