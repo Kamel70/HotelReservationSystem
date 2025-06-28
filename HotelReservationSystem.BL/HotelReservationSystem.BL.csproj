@@ -10,4 +10,8 @@
     <ProjectReference Include="..\HotelReservationSystem.Core\HotelReservationSystem.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\RoomImages\" />
+  </ItemGroup>
+
 </Project>

@@ -65,7 +65,7 @@ namespace HotelReservationSystem.Api.Controllers
             return Ok(room);
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateRoom(AddRoomDto roomDto)
         {
             Room room = new Room
@@ -86,7 +86,7 @@ namespace HotelReservationSystem.Api.Controllers
             return CreatedAtAction(nameof(GetRoomById), new { id = room.Id }, room);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("Update/{id:int}")]
         public async Task<IActionResult> UpdateRoom(int id, AddRoomDto roomDto)
         {
             var existingRoom = await _roomRepository.FindAsync(r => r.Id == id);
@@ -108,7 +108,7 @@ namespace HotelReservationSystem.Api.Controllers
             await _roomRepository.SaveAsync();
             return Ok($"The Room {existingRoom.roomNumber} Updated Successfully");
         }
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
             var room = await _roomRepository.FindAsync(r => r.Id == id);
